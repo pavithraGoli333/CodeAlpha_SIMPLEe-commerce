@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My E-Commerce Store</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    .product-card {
+      border: 1px solid #ccc;
+      padding: 15px;
+      text-align: center;
+      box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+    }
+
+    .product-card img {
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+
+    .product-card h2 {
+      font-size: 18px;
+      margin: 10px 0 5px;
+    }
+
+    .product-card p {
+      font-size: 14px;
+      color: #666;
+    }
+
+    .product-card span {
+      font-weight: bold;
+      color: #000;
+      display: block;
+      margin: 8px 0;
+    }
+
+    .product-card button {
+      padding: 8px 12px;
+      background-color: #f08804;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 5px;
+    }
+
+    .product-card button:hover {
+      background-color: #c77602;
+    }
+
+    #cart {
+      position: fixed;
+      right: 0;
+      top: 0;
+      width: 300px;
+      background: white;
+      height: 100%;
+      box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+      padding: 20px;
+      display: none;
+      overflow-y: auto;
+      z-index: 999;
+    }
+
+    #view-cart-btn {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      z-index: 1000;
+      background-color: #0073e6;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    #view-cart-btn:hover {
+      background-color: #005bb5;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>My E-Commerce Store</h1>
+  </header>
+
+  <button id="view-cart-btn" onclick="updateCartUI()">🛒 View Cart</button>
+
+  <section class="product-grid">
+    <!-- Sample Product Cards -->
+    <div class="product-card">
+      <img src="https://media.gq.com/photos/660d999c55c59876ea540df1/4:3/pass/expensive-sneakers.jpg" alt="Shoes">
+      <h2>Shoes</h2>
+      <p>Comfortable running shoes.</p>
+      <span>₹59.99</span>
+      <button onclick="addToCart('Shoes', 59.99)">Add to Cart</button>
+      <button onclick="buyNow('Shoes', 59.99)">Buy Now</button>
+    </div>
+
+    <div class="product-card">
+      <img src="https://media-us.landmarkshops.in/cdn-cgi/image/h=739,w=499,q=85,fit=cover/max-new/1000013705451-Blue-LIGHTBLUE-1000013705451_01-2100.jpg" alt="Shirt">
+      <h2>Shirt</h2>
+      <p>Cotton casual shirt.</p>
+      <span>₹3.55</span>
+      <button onclick="addToCart('Shirt', 3.55)">Add to Cart</button>
+      <button onclick="buyNow('Shirt', 3.55)">Buy Now</button>
+    </div>
+
+    <div class="product-card">
+      <img src="https://tse3.mm.bing.net/th?id=OIP.fx5XJSh_grNCFYxBsD6MhwHaLz&pid=Api&P=0&h=180" alt="Dress">
+      <h2>Women Dresses</h2>
+      <p>Elegant women’s dress.</p>
+      <span>₹29.99</span>
+      <button onclick="addToCart('Women Dress', 29.99)">Add to Cart</button>
+      <button onclick="buyNow('Women Dress', 29.99)">Buy Now</button>
+    </div>
+
+    <!-- Add more product cards similarly... -->
+  </section>
+
+  <!-- Cart Sidebar -->
+  <div id="cart">
+    <h2>Your Cart</h2>
+    <ul id="cart-items"></ul>
+    <p><strong>Total:</strong> ₹<span id="cart-total">0</span></p>
+    <button onclick="checkout()">Checkout</button>
+    <button onclick="closeCart()">Close</button>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    let cart = [];
+
+    function addToCart(name, price) {
+      cart.push({ name, price });
+      alert(name + " added to cart!");
+      updateCartUI();
+    }
+
+    function updateCartUI() {
+      const cartList = document.getElementById('cart-items');
+      const cartTotal = document.getElementById('cart-total');
+      cartList.innerHTML = '';
+      let total = 0;
+      cart.forEach(item => {
+        total += parseFloat(item.price);
+        cartList.innerHTML += `<li>${item.name} - ₹${item.price}</li>`;
+      });
+      cartTotal.textContent = total.toFixed(2);
+      document.getElementById('cart').style.display = 'block';
+    }
+
+    function closeCart() {
+      document.getElementById('cart').style.display = 'none';
+    }
+
+    function checkout() {
+      const name = prompt("Enter your full name:");
+      const address = prompt("Enter your address:");
+      const payment = prompt("Choose payment: Cash on Delivery / Credit Card / UPI");
+
+      if (name && address && payment) {
+        alert(`Order placed!\nName: ${name}\nAddress: ${address}\nPayment: ${payment}`);
+        cart = [];
+        updateCartUI();
+        closeCart();
+      } else {
+        alert("Please complete all fields.");
+      }
+    }
+
+    function buyNow(name, price) {
+      const confirmBuy = confirm(`Buy ${name} for ₹${price}?`);
+      if (confirmBuy) {
+        const address = prompt("Enter delivery address:");
+        const payment = prompt("Payment method: Cash on Delivery / UPI / Card");
+        if (address && payment) {
+          alert(`Order confirmed!\nProduct: ${name}\nAddress: ${address}\nPayment: ${payment}`);
+        } else {
+          alert("Order failed. Fill all fields.");
+        }
+      }
+    }
+  </script>
+</body>
+</html>
